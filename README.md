@@ -6,6 +6,6 @@
 ------- 
 ## Contributors 
 
-Pragyan Pant
-Atharv Bindal 
-Sloke Bhakat
+Pragyan Pant \\
+Atharv Bindal  \\
+Sloke Bhakat \\
