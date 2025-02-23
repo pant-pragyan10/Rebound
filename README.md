@@ -12,3 +12,6 @@ Rebound is an AI-powered Medical Diagnosis & Rehabilitation Support system desig
 2. Pragyan Pant
 3. Atharv Bindal  
 4. Sloke Bhakat 
+
+
+![rebound1](https://github.com/user-attachments/assets/64d0315b-a69e-4d1f-a6d9-775b948c1457)
