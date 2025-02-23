@@ -15,3 +15,7 @@ Rebound is an AI-powered Medical Diagnosis & Rehabilitation Support system desig
 
 
 ![rebound1](https://github.com/user-attachments/assets/64d0315b-a69e-4d1f-a6d9-775b948c1457)
+
+![rebound3](https://github.com/user-attachments/assets/782c39ca-3842-464e-98fa-058b26592b75)
+
+![rebound2](https://github.com/user-attachments/assets/7fe470cf-c946-41b7-b070-9be4625ebc35)
