@@ -8,6 +8,7 @@ Rebound is an AI-powered Medical Diagnosis & Rehabilitation Support system desig
 ------- 
 ## Contributors 
 
-1. Pragyan Pant 
-2. Atharv Bindal  
-3. Sloke Bhakat 
+1. Supratim Saha
+2. Pragyan Pant
+3. Atharv Bindal  
+4. Sloke Bhakat 
