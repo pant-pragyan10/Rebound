@@ -128,7 +128,6 @@ export function RecoveryPrediction() {
               >
                 <option value="">Select severity</option>
                 <option value="low">Low</option>
-                <option value="moderate">Moderate</option>
                 <option value="high">High</option>
               </select>
             </motion.div>
