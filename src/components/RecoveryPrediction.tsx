@@ -1,43 +1,43 @@
 import React, { useState } from 'react';
-import { Clock, Activity, User, Calendar, Dumbbell, History, AlertCircle } from 'lucide-react';
+import { Activity, User, Calendar, Dumbbell, AlertCircle, HeartPulse } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Client } from "@gradio/client";
 
 export function RecoveryPrediction() {
   const [formData, setFormData] = useState({
     age: '',
-    injury: '',
+    weight: '',
+    height: '',
+    gender: '',
+    injuryType: '',
     severity: '',
-    fitnessLevel: '',
-    previousInjuries: ''
+    guidedRecoveryTraining: ''
   });
+  const [prediction, setPrediction] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here we would normally make the API call to the prediction model
-    console.log('Form submitted:', formData);
-  };
-
-  const formVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
+    setIsLoading(true);
+    try {
+      console.log("Connecting to API...");
+      const client = await Client.connect("Shinichi876/rec_new");
+      const result = await client.predict("/predict", {
+        age: Number(formData.age),
+        weight: Number(formData.weight),
+        height: Number(formData.height),
+        gender: formData.gender,
+        injury_type: formData.injuryType,
+        severity: formData.severity,
+        guided_recovery_training: formData.guidedRecoveryTraining
+      });
+      console.log("API Response:", result.data);
+      setPrediction(result.data);
+    } catch (error) {
+      console.error("Error fetching prediction:", error);
+      setPrediction("Error processing the request.");
     }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 10
-      }
-    }
+    setIsLoading(false);
   };
 
   return (
@@ -49,119 +49,114 @@ export function RecoveryPrediction() {
           transition={{ duration: 0.5 }}
           className="bg-black/50 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-red-500/10"
         >
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center space-x-3 mb-8"
-          >
-            <Clock className="text-red-500 h-6 w-6" />
+          <motion.div className="flex items-center space-x-3 mb-8">
+            <HeartPulse className="text-red-500 h-6 w-6" />
             <h2 className="text-2xl font-bold text-white">Recovery Time Prediction</h2>
           </motion.div>
 
-          <motion.form 
-            variants={formVariants}
-            initial="hidden"
-            animate="visible"
-            onSubmit={handleSubmit} 
-            className="space-y-6"
-          >
-            <motion.div variants={itemVariants}>
-              <label className="block text-white mb-2 font-medium flex items-center">
-                <Calendar className="h-5 w-5 mr-2 text-red-500" />
-                Age
-              </label>
-              <motion.input
-                whileFocus={{ scale: 1.01 }}
+          <motion.form onSubmit={handleSubmit} className="space-y-6">
+            <motion.div>
+              <label className="block text-white mb-2 font-medium">Age</label>
+              <input
                 type="number"
                 value={formData.age}
                 onChange={(e) => setFormData({...formData, age: e.target.value})}
-                className="w-full bg-gray-800/50 backdrop-blur-sm text-white rounded-xl p-4 border border-red-500/20 focus:border-red-500 focus:ring-red-500 transition-all duration-300"
+                className="w-full bg-gray-800/50 text-white rounded-xl p-4 border border-red-500/20"
                 placeholder="Enter your age"
               />
             </motion.div>
 
-            <motion.div variants={itemVariants}>
-              <label className="block text-white mb-2 font-medium flex items-center">
-                <Activity className="h-5 w-5 mr-2 text-red-500" />
-                Type of Injury
-              </label>
-              <motion.select
-                whileTap={{ scale: 0.98 }}
-                value={formData.injury}
-                onChange={(e) => setFormData({...formData, injury: e.target.value})}
-                className="w-full bg-gray-800/50 backdrop-blur-sm text-white rounded-xl p-4 border border-red-500/20 focus:border-red-500 focus:ring-red-500 transition-all duration-300"
-              >
-                <option value="">Select injury type</option>
-                <option value="sprain">Sprain</option>
-                <option value="strain">Strain</option>
-                <option value="fracture">Fracture</option>
-                <option value="dislocation">Dislocation</option>
-              </motion.select>
-            </motion.div>
-
-            <motion.div variants={itemVariants}>
-              <label className="block text-white mb-2 font-medium flex items-center">
-                <AlertCircle className="h-5 w-5 mr-2 text-red-500" />
-                Injury Severity
-              </label>
-              <motion.select
-                whileTap={{ scale: 0.98 }}
-                value={formData.severity}
-                onChange={(e) => setFormData({...formData, severity: e.target.value})}
-                className="w-full bg-gray-800/50 backdrop-blur-sm text-white rounded-xl p-4 border border-red-500/20 focus:border-red-500 focus:ring-red-500 transition-all duration-300"
-              >
-                <option value="">Select severity</option>
-                <option value="mild">Mild</option>
-                <option value="moderate">Moderate</option>
-                <option value="severe">Severe</option>
-              </motion.select>
-            </motion.div>
-
-            <motion.div variants={itemVariants}>
-              <label className="block text-white mb-2 font-medium flex items-center">
-                <Dumbbell className="h-5 w-5 mr-2 text-red-500" />
-                Fitness Level
-              </label>
-              <motion.select
-                whileTap={{ scale: 0.98 }}
-                value={formData.fitnessLevel}
-                onChange={(e) => setFormData({...formData, fitnessLevel: e.target.value})}
-                className="w-full bg-gray-800/50 backdrop-blur-sm text-white rounded-xl p-4 border border-red-500/20 focus:border-red-500 focus:ring-red-500 transition-all duration-300"
-              >
-                <option value="">Select fitness level</option>
-                <option value="beginner">Beginner</option>
-                <option value="intermediate">Intermediate</option>
-                <option value="advanced">Advanced</option>
-                <option value="elite">Elite</option>
-              </motion.select>
-            </motion.div>
-
-            <motion.div variants={itemVariants}>
-              <label className="block text-white mb-2 font-medium flex items-center">
-                <History className="h-5 w-5 mr-2 text-red-500" />
-                Previous Injuries
-              </label>
-              <motion.textarea
-                whileFocus={{ scale: 1.01 }}
-                value={formData.previousInjuries}
-                onChange={(e) => setFormData({...formData, previousInjuries: e.target.value})}
-                className="w-full bg-gray-800/50 backdrop-blur-sm text-white rounded-xl p-4 border border-red-500/20 focus:border-red-500 focus:ring-red-500 transition-all duration-300"
-                placeholder="Describe any previous injuries..."
-                rows={4}
+            <motion.div>
+              <label className="block text-white mb-2 font-medium">Weight (kg)</label>
+              <input
+                type="number"
+                value={formData.weight}
+                onChange={(e) => setFormData({...formData, weight: e.target.value})}
+                className="w-full bg-gray-800/50 text-white rounded-xl p-4 border border-red-500/20"
+                placeholder="Enter your weight"
               />
             </motion.div>
 
-            <motion.button
-              variants={itemVariants}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              type="submit"
-              className="w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-4 rounded-xl hover:shadow-lg hover:shadow-red-500/20 transition-all duration-300 flex items-center justify-center space-x-2 font-medium text-lg"
-            >
-              <Activity className="h-5 w-5" />
-              <span>Predict Recovery Time</span>
+            <motion.div>
+              <label className="block text-white mb-2 font-medium">Height (cm)</label>
+              <input
+                type="number"
+                value={formData.height}
+                onChange={(e) => setFormData({...formData, height: e.target.value})}
+                className="w-full bg-gray-800/50 text-white rounded-xl p-4 border border-red-500/20"
+                placeholder="Enter your height"
+              />
+            </motion.div>
+
+            <motion.div>
+              <label className="block text-white mb-2 font-medium">Gender</label>
+              <select
+                value={formData.gender}
+                onChange={(e) => setFormData({...formData, gender: e.target.value})}
+                className="w-full bg-gray-800/50 text-white rounded-xl p-4 border border-red-500/20"
+              >
+                <option value="">Select gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </motion.div>
+
+            <motion.div>
+              <label className="block text-white mb-2 font-medium">Injury Type</label>
+              <select
+                value={formData.injuryType}
+                onChange={(e) => setFormData({...formData, injuryType: e.target.value})}
+                className="w-full bg-gray-800/50 text-white rounded-xl p-4 border border-red-500/20"
+              >
+                <option value="">Select injury type</option>
+                <option value="cervical spine dislocation">Cervical Spine Dislocation</option>
+                <option value="cervical spine fracture">Cervical Spine Fracture</option>
+                <option value="chest flail">Chest Flail</option>
+                <option value="chest hemothorax">Chest Hemothorax</option>
+                <option value="chest pneumothorax">Chest Pneumothorax</option>
+                <option value="knee damage">Knee Damage</option>
+                <option value="pelvis fracture">Pelvis Fracture</option>
+              </select>
+            </motion.div>
+
+            <motion.div>
+              <label className="block text-white mb-2 font-medium">Severity</label>
+              <select
+                value={formData.severity}
+                onChange={(e) => setFormData({...formData, severity: e.target.value})}
+                className="w-full bg-gray-800/50 text-white rounded-xl p-4 border border-red-500/20"
+              >
+                <option value="">Select severity</option>
+                <option value="low">Low</option>
+                <option value="moderate">Moderate</option>
+                <option value="high">High</option>
+              </select>
+            </motion.div>
+
+            <motion.div>
+              <label className="block text-white mb-2 font-medium">Guided Recovery Training</label>
+              <select
+                value={formData.guidedRecoveryTraining}
+                onChange={(e) => setFormData({...formData, guidedRecoveryTraining: e.target.value})}
+                className="w-full bg-gray-800/50 text-white rounded-xl p-4 border border-red-500/20"
+              >
+                <option value="">Select option</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </motion.div>
+
+            <motion.button type="submit" className="w-full bg-red-600 text-white py-4 rounded-xl">
+              {isLoading ? "Predicting..." : "Predict Recovery Time"}
             </motion.button>
           </motion.form>
+
+          {prediction && (
+            <div className="mt-6 bg-gray-800 p-4 rounded-xl text-white">
+              <h3 className="text-xl font-bold">Predicted Recovery Time</h3>
+              <p>{prediction}</p>
+            </div>
+          )}
         </motion.div>
       </div>
     </div>
